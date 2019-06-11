@@ -1,9 +1,11 @@
+use std::env;
 use std::error::Error;
 use std::fs;
 
 pub struct Config {
     pub query: String,
     pub filename: String,
+    pub case_sensitive: bool,
 }
 
 impl Config {
@@ -15,14 +17,29 @@ impl Config {
         let query = args[1].clone();
         let filename = args[2].clone();
 
-        Ok(Config { query, filename })
+        // 检查叫做 CASE_INSENSITIVE 的环境变量
+        // 使用 Result 的 is_err 方法来检查其是否是一个 error（也就是环境变量未被设置的情况）
+        // 因为我们并不关心环境变量所设置的值，只关心它是否被设置了
+        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+
+        Ok(Config {
+            query,
+            filename,
+            case_sensitive,
+        })
     }
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
 
-    for line in search(&config.query, &contents) {
+    let results = if config.case_sensitive {
+        search(&config.query, &contents)
+    } else {
+        search_case_insensitive(&config.query, &contents)
+    };
+
+    for line in results {
         println!("{}", line);
     }
 
@@ -81,7 +98,8 @@ safe, fast, productive.
 Pick three.
 Trust me.";
         assert_eq!(
-            vec!["Rust:", "Trust me."], 
-            search_case_insensitive(query, contents));
+            vec!["Rust:", "Trust me."],
+            search_case_insensitive(query, contents)
+        );
     }
 }
