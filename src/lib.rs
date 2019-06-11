@@ -29,7 +29,16 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     // 返回的 vector 中应该包含引用参数 contents（而不是参数 query）slice 的字符串 slice
-    vec![]
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            // do something with line
+            results.push(line);
+        }
+    }
+
+    results
 }
 
 #[cfg(test)]
