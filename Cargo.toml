@@ -1,5 +1,5 @@
 [package]
-name = "grep-rs"
+name = "grep_rs"
 version = "0.1.0"
 authors = ["Gackle <gackle83@outlook.com>"]
 edition = "2018"
