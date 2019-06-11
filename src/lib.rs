@@ -26,3 +26,26 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     Ok(())  // 返回 unit 类型 ()
 }
+
+fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    // 返回的 vector 中应该包含引用参数 contents（而不是参数 query）slice 的字符串 slice
+    vec![]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+        assert_eq!(
+            vec!["safe, fast, productive."], 
+            search(query, contents)
+        );
+    }
+}
