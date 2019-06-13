@@ -9,13 +9,19 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
+    // 将 new 函数改为获取一个有所有权的迭代器作为参数而不是借用 slice
+    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+        args.next();
 
-        let query = args[1].clone();
-        let filename = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file name"),
+        };
 
         // 检查叫做 CASE_INSENSITIVE 的环境变量
         // 使用 Result 的 is_err 方法来检查其是否是一个 error（也就是环境变量未被设置的情况）
