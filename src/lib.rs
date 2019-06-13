@@ -54,29 +54,17 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     // 返回的 vector 中应该包含引用参数 contents（而不是参数 query）slice 的字符串 slice
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.contains(query) {
-            // do something with line
-            results.push(line);
-        }
-    }
-
-    results
+    contents.lines()
+            .filter(|line| line.contains(query))
+            .collect()
 }
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
+    
+    contents.lines()
+            .filter(|line| line.contains(&query))
+            .collect()
 }
 
 #[cfg(test)]
